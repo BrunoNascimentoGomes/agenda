@@ -5,6 +5,7 @@ const DEMO = new URLSearchParams(location.search).has("demo");
 const G = DEMO ? await import("./demo.js") : await import("./google.js");
 import * as S from "./sync.js";
 import * as M from "./metas.js";
+import * as PET from "./pet.js";
 
 // ---------------------------------------------------------------- datas
 const MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro",
@@ -195,7 +196,7 @@ function render() {
   document.getElementById("fab").hidden = !entrou || E.aba === "ajustes";
   if (!entrou) { $conteudo().innerHTML = telaEntrar(); return; }
   $conteudo().innerHTML = E.aba === "tarefas" ? telaTarefas() : E.aba === "ajustes" ? telaAjustes()
-    : E.aba === "metas" ? M.tela(E) : telaAgenda();
+    : E.aba === "metas" ? PET.cartao(E) + M.tela(E) : telaAgenda();
 }
 
 function topo() {
@@ -351,7 +352,7 @@ function telaAjustes() {
     ${cartaoInstalar(true)}
     <section class="cartao">
       <h3>Sobre</h3>
-      <p>As tarefas e eventos ficam na sua conta Google, os mesmos do app do computador. As metas ficam em sincronia com o app do computador. Em breve: foco, cronômetro e o pet também aqui.</p>
+      <p>As tarefas e eventos ficam na sua conta Google, os mesmos do app do computador. As metas ficam em sincronia com o app do computador. Em breve: foco e cronômetro também aqui.</p>
       <p class="suave">Versão ${VERSAO}${DEMO ? " · demonstração" : ""}</p>
       ${DEMO ? '<button class="botao-leve" data-acao="sair-demo">Sair da demonstração</button>' : ""}
     </section>`;
@@ -584,6 +585,7 @@ document.addEventListener("click", async (e) => {
   const b = e.target.closest("[data-acao]"); if (!b) return;
   const a = b.dataset.acao;
   if (a.startsWith("meta") && M.acao(a, b, E)) return;
+  if (a === "pet") { PET.folha(E); return; }
   if (a === "entrar") G.entrar();
   else if (a === "reconectar") G.entrar({ silencioso: false, volta: E.aba });
   else if (a === "trocar-conta") G.entrar({ trocarConta: true });
@@ -661,6 +663,8 @@ S.ouvir(() => {
   if (!document.getElementById("folha").classList.contains("aberta") || E.aba !== "metas") render();
 });
 categoriasDoPC();
+PET.iniciar({ render: () => render(), abrirFolha, fecharFolha, avisar: (m) => avisar(m) }).then(() => render());
+PET.animar();
 
 async function iniciar() {
   aplicarTema();

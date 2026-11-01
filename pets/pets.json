@@ -1,0 +1,866 @@
+{
+ "img:meu_cavalo": {
+  "nome": "Cavalo",
+  "nome_padrao": "Trovão",
+  "base": "cavalo",
+  "pasta": "meu_cavalo",
+  "anim": {
+   "radiante_0": [
+    8,
+    110
+   ],
+   "radiante_1": [
+    8,
+    110
+   ],
+   "radiante_2": [
+    8,
+    110
+   ],
+   "radiante_3": [
+    8,
+    110
+   ],
+   "radiante_4": [
+    8,
+    110
+   ],
+   "feliz_0": [
+    8,
+    150
+   ],
+   "feliz_1": [
+    8,
+    150
+   ],
+   "feliz_2": [
+    8,
+    150
+   ],
+   "feliz_3": [
+    8,
+    150
+   ],
+   "feliz_4": [
+    8,
+    150
+   ],
+   "ok_0": [
+    8,
+    230
+   ],
+   "ok_1": [
+    8,
+    230
+   ],
+   "ok_2": [
+    8,
+    230
+   ],
+   "ok_3": [
+    8,
+    230
+   ],
+   "ok_4": [
+    8,
+    230
+   ],
+   "triste_0": [
+    8,
+    230
+   ],
+   "triste_1": [
+    8,
+    230
+   ],
+   "triste_2": [
+    8,
+    230
+   ],
+   "triste_3": [
+    8,
+    230
+   ],
+   "triste_4": [
+    8,
+    230
+   ],
+   "dormindo_0": [
+    8,
+    140
+   ],
+   "dormindo_1": [
+    8,
+    140
+   ],
+   "dormindo_2": [
+    8,
+    140
+   ],
+   "dormindo_3": [
+    8,
+    140
+   ],
+   "dormindo_4": [
+    8,
+    140
+   ]
+  }
+ },
+ "img:meu_cervo": {
+  "nome": "Cervo",
+  "nome_padrao": "Galhardo",
+  "base": null,
+  "pasta": "meu_cervo",
+  "anim": {
+   "radiante_0": [
+    8,
+    110
+   ],
+   "radiante_1": [
+    8,
+    110
+   ],
+   "radiante_2": [
+    8,
+    110
+   ],
+   "radiante_3": [
+    8,
+    110
+   ],
+   "radiante_4": [
+    8,
+    110
+   ],
+   "feliz_0": [
+    8,
+    150
+   ],
+   "feliz_1": [
+    8,
+    150
+   ],
+   "feliz_2": [
+    8,
+    150
+   ],
+   "feliz_3": [
+    8,
+    150
+   ],
+   "feliz_4": [
+    8,
+    150
+   ],
+   "ok_0": [
+    8,
+    230
+   ],
+   "ok_1": [
+    8,
+    230
+   ],
+   "ok_2": [
+    8,
+    230
+   ],
+   "ok_3": [
+    8,
+    230
+   ],
+   "ok_4": [
+    8,
+    230
+   ],
+   "triste_0": [
+    8,
+    230
+   ],
+   "triste_1": [
+    8,
+    230
+   ],
+   "triste_2": [
+    8,
+    230
+   ],
+   "triste_3": [
+    8,
+    230
+   ],
+   "triste_4": [
+    8,
+    230
+   ],
+   "dormindo_0": [
+    8,
+    140
+   ],
+   "dormindo_1": [
+    8,
+    140
+   ],
+   "dormindo_2": [
+    8,
+    140
+   ],
+   "dormindo_3": [
+    8,
+    140
+   ],
+   "dormindo_4": [
+    8,
+    140
+   ]
+  }
+ },
+ "img:meu_cobra": {
+  "nome": "Cobra",
+  "nome_padrao": "Safira",
+  "base": null,
+  "pasta": "meu_cobra",
+  "anim": {
+   "radiante_0": [
+    8,
+    110
+   ],
+   "radiante_1": [
+    8,
+    110
+   ],
+   "radiante_2": [
+    8,
+    110
+   ],
+   "radiante_3": [
+    8,
+    110
+   ],
+   "radiante_4": [
+    8,
+    110
+   ],
+   "feliz_0": [
+    8,
+    150
+   ],
+   "feliz_1": [
+    8,
+    150
+   ],
+   "feliz_2": [
+    8,
+    150
+   ],
+   "feliz_3": [
+    8,
+    150
+   ],
+   "feliz_4": [
+    8,
+    150
+   ],
+   "ok_0": [
+    8,
+    230
+   ],
+   "ok_1": [
+    8,
+    230
+   ],
+   "ok_2": [
+    8,
+    230
+   ],
+   "ok_3": [
+    8,
+    230
+   ],
+   "ok_4": [
+    8,
+    230
+   ],
+   "triste_0": [
+    8,
+    230
+   ],
+   "triste_1": [
+    8,
+    230
+   ],
+   "triste_2": [
+    8,
+    230
+   ],
+   "triste_3": [
+    8,
+    230
+   ],
+   "triste_4": [
+    8,
+    230
+   ],
+   "dormindo_0": [
+    8,
+    140
+   ],
+   "dormindo_1": [
+    8,
+    140
+   ],
+   "dormindo_2": [
+    8,
+    140
+   ],
+   "dormindo_3": [
+    8,
+    140
+   ],
+   "dormindo_4": [
+    8,
+    140
+   ]
+  }
+ },
+ "img:meu_dragao": {
+  "nome": "Dragão",
+  "nome_padrao": "Brasa",
+  "base": "dragao",
+  "pasta": "meu_dragao",
+  "anim": {
+   "radiante_0": [
+    8,
+    110
+   ],
+   "radiante_1": [
+    8,
+    110
+   ],
+   "radiante_2": [
+    8,
+    110
+   ],
+   "radiante_3": [
+    8,
+    110
+   ],
+   "radiante_4": [
+    8,
+    110
+   ],
+   "feliz_0": [
+    8,
+    150
+   ],
+   "feliz_1": [
+    8,
+    150
+   ],
+   "feliz_2": [
+    8,
+    150
+   ],
+   "feliz_3": [
+    8,
+    150
+   ],
+   "feliz_4": [
+    8,
+    150
+   ],
+   "ok_0": [
+    8,
+    230
+   ],
+   "ok_1": [
+    8,
+    230
+   ],
+   "ok_2": [
+    8,
+    230
+   ],
+   "ok_3": [
+    8,
+    230
+   ],
+   "ok_4": [
+    8,
+    230
+   ],
+   "triste_0": [
+    8,
+    230
+   ],
+   "triste_1": [
+    8,
+    230
+   ],
+   "triste_2": [
+    8,
+    230
+   ],
+   "triste_3": [
+    8,
+    230
+   ],
+   "triste_4": [
+    8,
+    230
+   ],
+   "dormindo_0": [
+    8,
+    140
+   ],
+   "dormindo_1": [
+    8,
+    140
+   ],
+   "dormindo_2": [
+    8,
+    140
+   ],
+   "dormindo_3": [
+    8,
+    140
+   ],
+   "dormindo_4": [
+    8,
+    140
+   ]
+  }
+ },
+ "img:meu_leao": {
+  "nome": "Leão",
+  "nome_padrao": "Simbad",
+  "base": null,
+  "pasta": "meu_leao",
+  "anim": {
+   "radiante_0": [
+    8,
+    110
+   ],
+   "radiante_1": [
+    8,
+    110
+   ],
+   "radiante_2": [
+    8,
+    110
+   ],
+   "radiante_3": [
+    8,
+    110
+   ],
+   "radiante_4": [
+    8,
+    110
+   ],
+   "feliz_0": [
+    8,
+    150
+   ],
+   "feliz_1": [
+    8,
+    150
+   ],
+   "feliz_2": [
+    8,
+    150
+   ],
+   "feliz_3": [
+    8,
+    150
+   ],
+   "feliz_4": [
+    8,
+    150
+   ],
+   "ok_0": [
+    8,
+    230
+   ],
+   "ok_1": [
+    8,
+    230
+   ],
+   "ok_2": [
+    8,
+    230
+   ],
+   "ok_3": [
+    8,
+    230
+   ],
+   "ok_4": [
+    8,
+    230
+   ],
+   "triste_0": [
+    8,
+    230
+   ],
+   "triste_1": [
+    8,
+    230
+   ],
+   "triste_2": [
+    8,
+    230
+   ],
+   "triste_3": [
+    8,
+    230
+   ],
+   "triste_4": [
+    8,
+    230
+   ],
+   "dormindo_0": [
+    8,
+    140
+   ],
+   "dormindo_1": [
+    8,
+    140
+   ],
+   "dormindo_2": [
+    8,
+    140
+   ],
+   "dormindo_3": [
+    8,
+    140
+   ],
+   "dormindo_4": [
+    8,
+    140
+   ]
+  }
+ },
+ "img:meu_pegaso": {
+  "nome": "Pégaso",
+  "nome_padrao": "Aurora",
+  "base": "cavalo",
+  "pasta": "meu_pegaso",
+  "anim": {
+   "radiante_0": [
+    8,
+    110
+   ],
+   "radiante_1": [
+    8,
+    110
+   ],
+   "radiante_2": [
+    8,
+    110
+   ],
+   "radiante_3": [
+    8,
+    110
+   ],
+   "radiante_4": [
+    8,
+    110
+   ],
+   "feliz_0": [
+    8,
+    150
+   ],
+   "feliz_1": [
+    8,
+    150
+   ],
+   "feliz_2": [
+    8,
+    150
+   ],
+   "feliz_3": [
+    8,
+    150
+   ],
+   "feliz_4": [
+    8,
+    150
+   ],
+   "ok_0": [
+    8,
+    230
+   ],
+   "ok_1": [
+    8,
+    230
+   ],
+   "ok_2": [
+    8,
+    230
+   ],
+   "ok_3": [
+    8,
+    230
+   ],
+   "ok_4": [
+    8,
+    230
+   ],
+   "triste_0": [
+    8,
+    230
+   ],
+   "triste_1": [
+    8,
+    230
+   ],
+   "triste_2": [
+    8,
+    230
+   ],
+   "triste_3": [
+    8,
+    230
+   ],
+   "triste_4": [
+    8,
+    230
+   ],
+   "dormindo_0": [
+    8,
+    140
+   ],
+   "dormindo_1": [
+    8,
+    140
+   ],
+   "dormindo_2": [
+    8,
+    140
+   ],
+   "dormindo_3": [
+    8,
+    140
+   ],
+   "dormindo_4": [
+    8,
+    140
+   ]
+  }
+ },
+ "img:meu_tigre": {
+  "nome": "Tigre",
+  "nome_padrao": "Listrado",
+  "base": null,
+  "pasta": "meu_tigre",
+  "anim": {
+   "radiante_0": [
+    8,
+    110
+   ],
+   "radiante_1": [
+    8,
+    110
+   ],
+   "radiante_2": [
+    8,
+    110
+   ],
+   "radiante_3": [
+    8,
+    110
+   ],
+   "radiante_4": [
+    8,
+    110
+   ],
+   "feliz_0": [
+    8,
+    150
+   ],
+   "feliz_1": [
+    8,
+    150
+   ],
+   "feliz_2": [
+    8,
+    150
+   ],
+   "feliz_3": [
+    8,
+    150
+   ],
+   "feliz_4": [
+    8,
+    150
+   ],
+   "ok_0": [
+    8,
+    230
+   ],
+   "ok_1": [
+    8,
+    230
+   ],
+   "ok_2": [
+    8,
+    230
+   ],
+   "ok_3": [
+    8,
+    230
+   ],
+   "ok_4": [
+    8,
+    230
+   ],
+   "triste_0": [
+    8,
+    230
+   ],
+   "triste_1": [
+    8,
+    230
+   ],
+   "triste_2": [
+    8,
+    230
+   ],
+   "triste_3": [
+    8,
+    230
+   ],
+   "triste_4": [
+    8,
+    230
+   ],
+   "dormindo_0": [
+    8,
+    140
+   ],
+   "dormindo_1": [
+    8,
+    140
+   ],
+   "dormindo_2": [
+    8,
+    140
+   ],
+   "dormindo_3": [
+    8,
+    140
+   ],
+   "dormindo_4": [
+    8,
+    140
+   ]
+  }
+ },
+ "img:meu_tubarao": {
+  "nome": "Tubarão",
+  "nome_padrao": "Mordida",
+  "base": null,
+  "pasta": "meu_tubarao",
+  "anim": {
+   "radiante_0": [
+    8,
+    110
+   ],
+   "radiante_1": [
+    8,
+    110
+   ],
+   "radiante_2": [
+    8,
+    110
+   ],
+   "radiante_3": [
+    8,
+    110
+   ],
+   "radiante_4": [
+    8,
+    110
+   ],
+   "feliz_0": [
+    8,
+    150
+   ],
+   "feliz_1": [
+    8,
+    150
+   ],
+   "feliz_2": [
+    8,
+    150
+   ],
+   "feliz_3": [
+    8,
+    150
+   ],
+   "feliz_4": [
+    8,
+    150
+   ],
+   "ok_0": [
+    8,
+    230
+   ],
+   "ok_1": [
+    8,
+    230
+   ],
+   "ok_2": [
+    8,
+    230
+   ],
+   "ok_3": [
+    8,
+    230
+   ],
+   "ok_4": [
+    8,
+    230
+   ],
+   "triste_0": [
+    8,
+    230
+   ],
+   "triste_1": [
+    8,
+    230
+   ],
+   "triste_2": [
+    8,
+    230
+   ],
+   "triste_3": [
+    8,
+    230
+   ],
+   "triste_4": [
+    8,
+    230
+   ],
+   "dormindo_0": [
+    8,
+    140
+   ],
+   "dormindo_1": [
+    8,
+    140
+   ],
+   "dormindo_2": [
+    8,
+    140
+   ],
+   "dormindo_3": [
+    8,
+    140
+   ],
+   "dormindo_4": [
+    8,
+    140
+   ]
+  }
+ }
+}

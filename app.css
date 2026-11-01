@@ -283,3 +283,43 @@ h3.atraso { color: var(--perigo); }
 .g-rot { font-size: 9px; fill: var(--suave); }
 .g-meta { font-size: 10px; fill: var(--dest); font-weight: 700; }
 .abas button { max-width: 160px; }
+
+/* ---------- pet */
+.pet-cartao { width: 100%; text-align: left; display: flex; gap: 10px; align-items: center; margin-bottom: 12px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--h, var(--dest)) 16%, var(--cartao)), var(--cartao));
+  border: 1px solid color-mix(in srgb, var(--h, var(--dest)) 30%, var(--borda)); border-radius: 20px; padding: 8px 14px 10px 4px; }
+.pet-cartao:active { transform: scale(.99); }
+.pet-anim { width: var(--t); height: var(--t); flex: none; background-repeat: no-repeat;
+  background-size: calc(var(--n, 1) * 100%) 100%; background-position: 0 0; }
+.pet-anim.ovo { background-size: contain; animation: balanca 1.5s ease-in-out infinite; }
+.pet-anim.pula { animation: pulo .5s ease-out 2; }
+@keyframes balanca { 50% { transform: translateY(-3px); } }
+@keyframes pulo { 30% { transform: translateY(-14px); } 60% { transform: translateY(2px); } }
+.pet-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.pet-nome { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pet-nome b { font-size: 19px; }
+.humor { font-size: 12px; font-weight: 800; color: #fff; background: var(--h, var(--dest)); border-radius: 99px; padding: 2px 9px; }
+.fala { margin: 0; font-size: 14px; color: var(--texto); font-style: italic; line-height: 1.3; }
+.pet-premio { font-size: 13px; font-weight: 700; color: var(--suave); }
+.barra-humor { height: 7px; border-radius: 9px; background: var(--borda); overflow: hidden; flex: 1; }
+.barra-humor i { display: block; height: 100%; background: var(--h, var(--dest)); border-radius: 9px; transition: width .4s; }
+.pet-info small { color: var(--suave); font-size: 12px; }
+.balao { background: var(--dest-suave); border-radius: 14px; padding: 10px 14px; font-size: 15px; position: relative; }
+.pet-grande { display: flex; justify-content: center; margin: 4px 0; }
+.centro { text-align: center; }
+.linha-humor { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+.premios { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.premio { border: 1px solid var(--borda); background: var(--cartao2); border-radius: 10px; padding: 6px 4px; text-align: center;
+  display: flex; flex-direction: column; }
+.premio b { font-size: 13px; color: var(--suave); }
+.premio small { color: var(--suave); font-size: 11px; }
+.premio.ganho { border-color: var(--dest); background: var(--dest-suave); }
+.premio.ganho b { color: var(--dest); }
+.pet-grade { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+.pet-opcao { display: flex; flex-direction: column; align-items: center; border: 2px solid transparent; border-radius: 12px;
+  padding: 4px 2px; background: var(--cartao2); font-size: 12px; font-weight: 700; }
+.pet-opcao.sel { border-color: var(--dest); background: var(--dest-suave); }
+.pet-info .barra-humor { flex: none; }
+.premios { margin-bottom: 10px; }
+.premio b { line-height: 1.25; }
+.linha-humor + .nota, .nota + .nota { margin-top: 0; }
