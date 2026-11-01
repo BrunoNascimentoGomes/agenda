@@ -84,3 +84,32 @@ export async function alterarTarefa(lista, id, corpo) {
 export async function apagarTarefa(lista, id) {
   const d = ler(); d.tarefas = d.tarefas.filter((x) => x.id !== id); gravar(d); return espera({});
 }
+
+// Drive de mentira (dados de exemplo das metas)
+export async function driveBaixar() {
+  let doc = null;
+  try { doc = JSON.parse(localStorage.getItem("agenda.demo.drive")); } catch { /* nada */ }
+  if (!doc) {
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    const itens = {
+      "meta:m1": { titulo: "Leitura", categoria: "Estudos", unidade: "vezes", quantidade: 5, periodo: "semanal", ref: "u:a1" },
+      "tarefa:a1": { titulo: "Leitura", categoria: "Estudos", notas: "", agendada: false, data: iso(hoje), inicio: "00:00",
+        fim: "00:00", dia_inteiro: false, repetir: "nenhuma", repetir_ate: null },
+      "meta:m2": { titulo: "Estudar circuitos", categoria: "Estudos", unidade: "horas", quantidade: 6, periodo: "semanal", ref: "g:e6" },
+      "meta:m3": { titulo: "Academia", categoria: "Pessoal", unidade: "vezes", quantidade: 1, periodo: "diaria", ref: "g:e4" },
+    };
+    for (let k = 1; k < 70; k++) {
+      const d = iso(mais(hoje, -k));
+      if (k % 3) itens[`reg:m1|${d}`] = 1 + (k % 4 === 0 ? 2 : 0);
+      if (k % 2) itens[`feito:g:e6|${d}`] = 2;
+      if (k < 9 || k % 4) itens[`feito:g:e4|${d}`] = 1;
+    }
+    itens[`reg:m1|${iso(hoje)}`] = 1;
+    doc = { itens };
+    localStorage.setItem("agenda.demo.drive", JSON.stringify(doc));
+  }
+  return espera({ fid: "demo", itens: doc.itens });
+}
+export async function driveSubir(fid, itens) {
+  localStorage.setItem("agenda.demo.drive", JSON.stringify({ itens })); return espera("demo");
+}

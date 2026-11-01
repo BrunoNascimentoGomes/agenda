@@ -155,3 +155,41 @@ export const alterarTarefa = (lista, id, corpo) =>
   api("PATCH", `${TASKS}/lists/${encodeURIComponent(lista)}/tasks/${encodeURIComponent(id)}`, corpo);
 export const apagarTarefa = (lista, id) =>
   api("DELETE", `${TASKS}/lists/${encodeURIComponent(lista)}/tasks/${encodeURIComponent(id)}`);
+
+// ---------------------------------------------------------------- Google Drive (pasta escondida do app)
+// O mesmo arquivo que o app do computador usa (sync_drive.py): metas, registros, feitos, categorias e pet.
+const DRIVE = "https://www.googleapis.com/drive/v3/files";
+const UPLOAD = "https://www.googleapis.com/upload/drive/v3/files";
+export const ARQUIVO_SYNC = "agenda-sync.json";
+
+export async function driveBaixar() {
+  const q = new URLSearchParams({ spaces: "appDataFolder", q: `name='${ARQUIVO_SYNC}' and trashed=false`,
+    fields: "files(id,modifiedTime)", orderBy: "modifiedTime desc" });
+  const lista = (await api("GET", `${DRIVE}?${q}`)).files || [];
+  if (!lista.length) return { fid: null, itens: {} };
+  const doc = await api("GET", `${DRIVE}/${lista[0].id}?alt=media`);
+  return { fid: lista[0].id, itens: doc.itens || {} };
+}
+
+export async function driveSubir(fid, itens) {
+  if (!tokenValido()) throw new PrecisaEntrar();
+  const corpo = JSON.stringify({ formato: 1, atualizado: new Date().toISOString(), itens });
+  let r;
+  try {
+    if (fid) {
+      r = await fetch(`${UPLOAD}/${fid}?uploadType=media`, { method: "PATCH", body: corpo,
+        headers: { Authorization: "Bearer " + sessao().token, "Content-Type": "application/json" } });
+    } else {
+      const limite = "agenda" + Math.random().toString(36).slice(2);
+      const meta = JSON.stringify({ name: ARQUIVO_SYNC, parents: ["appDataFolder"], mimeType: "application/json" });
+      const partes = `--${limite}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${meta}\r\n` +
+        `--${limite}\r\nContent-Type: application/json\r\n\r\n${corpo}\r\n--${limite}--`;
+      r = await fetch(`${UPLOAD}?uploadType=multipart&fields=id`, { method: "POST", body: partes,
+        headers: { Authorization: "Bearer " + sessao().token, "Content-Type": `multipart/related; boundary=${limite}` } });
+    }
+  } catch { throw new Error("Sem internet agora."); }
+  if (r.status === 401) throw new PrecisaEntrar();
+  const dados = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(traduzir(r.status, dados));
+  return dados.id || fid;
+}

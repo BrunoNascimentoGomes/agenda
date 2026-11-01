@@ -3,6 +3,8 @@ import { VERSAO } from "./config.js";
 
 const DEMO = new URLSearchParams(location.search).has("demo");
 const G = DEMO ? await import("./demo.js") : await import("./google.js");
+import * as S from "./sync.js";
+import * as M from "./metas.js";
 
 // ---------------------------------------------------------------- datas
 const MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro",
@@ -42,6 +44,12 @@ const local = {
   gravar(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* cheio ou bloqueado */ } },
 };
 const CATS = { ...CATS_PADRAO, ...local.ler("agenda.categorias", {}) };
+function categoriasDoPC() {                       // categorias criadas/renomeadas no PC (vêm pela sincronização)
+  const lista = S.ler1("config:categorias");
+  if (!Array.isArray(lista) || !lista.length) return;
+  for (const k of Object.keys(CATS)) delete CATS[k];
+  for (const c of lista) if (c?.nome) CATS[c.nome] = c.cor || "#64748B";
+}
 
 function lembrarCategoria(nome, colorId) {
   if (!nome || nome in CATS) return;
@@ -81,7 +89,7 @@ function deTarefa(t) {
 
 // ---------------------------------------------------------------- estado
 const E = {
-  aba: local.ler("agenda.aba", "agenda"), dia: hoje(), semanas: {}, tarefas: null, listas: [],
+  aba: local.ler("agenda.aba", "agenda"), dia: hoje(), semanas: {}, tarefas: null, listas: [], semanaMetas: inicioSemana(hoje()),
   carregando: 0, precisaEntrar: false, verFeitas: false, instalar: null,
 };
 for (const [k, v] of Object.entries(local.ler("agenda.cache.semanas", {}))) E.semanas[k] = v;
@@ -140,6 +148,8 @@ function itensDoDia(d) {
     tarefas,
   };
 }
+const chaveFeito = (e, d) => `feito:g:${e.serie || e.id}|${iso(d)}`;
+
 function agrupar(itens) {
   const grupos = new Map();
   for (const e of itens) {
@@ -184,19 +194,20 @@ function render() {
   document.querySelectorAll(".abas button").forEach((b) => b.classList.toggle("ativa", b.dataset.aba === E.aba));
   document.getElementById("fab").hidden = !entrou || E.aba === "ajustes";
   if (!entrou) { $conteudo().innerHTML = telaEntrar(); return; }
-  $conteudo().innerHTML = E.aba === "tarefas" ? telaTarefas() : E.aba === "ajustes" ? telaAjustes() : telaAgenda();
+  $conteudo().innerHTML = E.aba === "tarefas" ? telaTarefas() : E.aba === "ajustes" ? telaAjustes()
+    : E.aba === "metas" ? M.tela(E) : telaAgenda();
 }
 
 function topo() {
   const d = E.dia;
   const titulo = E.aba === "agenda" ? `${MESES[d.getMonth()][0].toUpperCase() + MESES[d.getMonth()].slice(1)} ${d.getFullYear()}`
-    : E.aba === "tarefas" ? "Tarefas" : "Ajustes";
+    : E.aba === "tarefas" ? "Tarefas" : E.aba === "metas" ? "Metas" : "Ajustes";
   return `
     <h1>${titulo}</h1>
     ${DEMO ? '<span class="selo">demonstração</span>' : ""}
     <div class="acoes-topo">
       ${E.aba === "agenda" && iso(E.dia) !== iso(hoje()) ? '<button class="botao-leve" data-acao="hoje">Hoje</button>' : ""}
-      ${E.aba !== "ajustes" ? `<button class="icone ${E.carregando ? "girando" : ""}" data-acao="atualizar" aria-label="Atualizar">⟳</button>` : ""}
+      ${E.aba !== "ajustes" ? `<button class="icone ${E.carregando || (E.aba === "metas" && S.estado.ocupado) ? "girando" : ""}" data-acao="atualizar" aria-label="Atualizar">⟳</button>` : ""}
     </div>`;
 }
 
@@ -261,10 +272,10 @@ function telaAgenda() {
   const cartoes = it.comHora.map((e) => {
     const multi = iso(e.ini) !== iso(e.fim) && !(e.fim - zerar(e.fim) === 0 && iso(mais(e.fim, -1)) === iso(e.ini));
     const ini = iso(e.ini) < iso(E.dia) ? "…" : hora(e.ini), fim = multi && iso(e.fim) > iso(E.dia) ? "…" : hora(e.fim);
-    const passou = e.fim < new Date();
-    return `<li><button class="evento ${passou ? "passou" : ""}" style="--c:${corCat(e.categoria)}" data-acao="evento" data-id="${esc(e.id)}">
+    const passou = e.fim < new Date(), feito = S.ler1(chaveFeito(e, E.dia)) !== undefined;
+    return `<li><button class="evento ${passou ? "passou" : ""} ${feito ? "feito" : ""}" style="--c:${corCat(e.categoria)}" data-acao="evento" data-id="${esc(e.id)}">
       <span class="horas"><b>${ini}</b><small>${fim}</small></span>
-      <span class="corpo"><b>${esc(e.titulo)}</b>${e.local || e.notas ? `<small>${esc((e.local || e.notas).split("\n")[0])}</small>` : ""}</span>
+      <span class="corpo"><b>${feito ? "✓ " : ""}${esc(e.titulo)}</b>${e.local || e.notas ? `<small>${esc((e.local || e.notas).split("\n")[0])}</small>` : ""}</span>
       ${e.serie ? '<span class="repete" title="Repete">↻</span>' : ""}
     </button></li>`;
   }).join("");
@@ -340,7 +351,7 @@ function telaAjustes() {
     ${cartaoInstalar(true)}
     <section class="cartao">
       <h3>Sobre</h3>
-      <p>As tarefas e eventos ficam na sua conta Google, os mesmos do app do computador. Em breve: metas, sequências e o pet também aqui.</p>
+      <p>As tarefas e eventos ficam na sua conta Google, os mesmos do app do computador. As metas ficam em sincronia com o app do computador. Em breve: foco, cronômetro e o pet também aqui.</p>
       <p class="suave">Versão ${VERSAO}${DEMO ? " · demonstração" : ""}</p>
       ${DEMO ? '<button class="botao-leve" data-acao="sair-demo">Sair da demonstração</button>' : ""}
     </section>`;
@@ -405,6 +416,9 @@ function editorEvento(ev, dia) {
         <option value="RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR">Dias úteis (seg a sex)</option>
         <option value="RRULE:FREQ=WEEKLY">Toda semana</option></select></label>` : ""}
       ${ev?.serie ? '<p class="nota">↻ Evento que se repete: as mudanças valem só para este dia.</p>' : ""}
+      ${novo || ev.registro ? "" : `<label class="alternar"><span>✓ Feito ${iso(dia) === iso(hoje()) ? "hoje" : "neste dia"}
+        <small class="suave">conta nas metas, como no PC</small></span>
+        <input type="checkbox" name="feito" ${S.ler1(chaveFeito(ev, dia)) !== undefined ? "checked" : ""}><i></i></label>`}
       <label class="campo">Notas<textarea name="notas" rows="3" placeholder="Opcional">${esc(ev?.notas || "")}</textarea></label>
       <div class="acoes">
         ${novo ? "" : '<button type="button" class="botao-perigo" data-acao-f="apagar">Apagar</button>'}
@@ -418,6 +432,12 @@ function editorEvento(ev, dia) {
     const ajustar = () => f.classList.toggle("dia-inteiro", f.diaInteiro.checked);
     ajustar();
     f.diaInteiro.addEventListener("change", ajustar);
+    f.feito?.addEventListener("change", () => {             // grava na hora (não depende de Salvar)
+      const k = chaveFeito(ev, dia), h = ev.diaInteiro ? 0 : Math.round((ev.fim - ev.ini) / 36e5 * 10000) / 10000;
+      S.alterar({ [k]: f.feito.checked ? h : null });
+      render();
+      avisar(f.feito.checked ? "Marcado como feito." : "Desmarcado.");
+    });
     f.inicio.addEventListener("change", () => {                 // mantém a duração ao mudar o início
       const dur = fim - ini, [hh, mm] = f.inicio.value.split(":").map(Number);
       const n = new Date(2000, 0, 1, hh, mm); n.setTime(n.getTime() + Math.max(dur, 1800_000));
@@ -563,21 +583,22 @@ function irPara(d) {
 document.addEventListener("click", async (e) => {
   const b = e.target.closest("[data-acao]"); if (!b) return;
   const a = b.dataset.acao;
+  if (a.startsWith("meta") && M.acao(a, b, E)) return;
   if (a === "entrar") G.entrar();
   else if (a === "reconectar") G.entrar({ silencioso: false, volta: E.aba });
   else if (a === "trocar-conta") G.entrar({ trocarConta: true });
   else if (a === "sair") {
     const r = await perguntar("Sair da conta", "O app esquece a conta neste aparelho. Seus eventos e tarefas continuam no Google.",
       [["sim", "Sair", true]]);
-    if (r) { G.sair(); localStorage.removeItem("agenda.cache.semanas"); localStorage.removeItem("agenda.cache.tarefas");
+    if (r) { G.sair(); S.esquecer(); localStorage.removeItem("agenda.cache.semanas"); localStorage.removeItem("agenda.cache.tarefas");
       E.semanas = {}; E.tarefas = null; render(); }
-  } else if (a === "sair-demo") { G.sair(); location.href = location.pathname; }
+  } else if (a === "sair-demo") { G.sair(); S.esquecer(); localStorage.removeItem("agenda.demo.drive"); location.href = location.pathname; }
   else if (a === "aba") { E.aba = b.dataset.aba; local.gravar("agenda.aba", E.aba); render(); window.scrollTo(0, 0);
     if (E.aba === "tarefas") carregarTarefas(); }
   else if (a === "dia") irPara(deIso(b.dataset.dia));
   else if (a === "semana") irPara(mais(E.dia, 7 * Number(b.dataset.passo)));
   else if (a === "hoje") irPara(hoje());
-  else if (a === "atualizar") atualizarTudo(true);
+  else if (a === "atualizar") { atualizarTudo(true); S.sincronizar(); }
   else if (a === "evento") {
     const ev = (E.semanas[iso(inicioSemana(E.dia))]?.itens || []).map(deEvento).find((x) => x.id === b.dataset.id);
     if (ev) editorEvento(ev, E.dia);
@@ -592,7 +613,8 @@ document.addEventListener("click", async (e) => {
   else if (a === "fechar-instalar") { local.gravar("agenda.instalar.fechado", true); render(); }
   else if (a === "fechar-folha") fecharFolha();
   else if (a === "novo") {
-    if (E.aba === "tarefas") editorTarefa(null, null);
+    if (E.aba === "metas") M.editor(null);
+    else if (E.aba === "tarefas") editorTarefa(null, null);
     else {
       const r = await perguntar("Criar", rotuloDia(E.dia), [["evento", "Evento com horário"], ["tarefa", "Tarefa do dia"]]);
       if (r === "evento") editorEvento(null, E.dia);
@@ -625,11 +647,21 @@ document.addEventListener("visibilitychange", () => {
   E._abertoEm = new Date();
   if (G.conectou() && !G.tokenValido() && !DEMO) { E.precisaEntrar = true; render(); return; }
   atualizarTudo(false);
+  S.agendar(400);
 });
 window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); E.instalar = e; render(); });
 window.addEventListener("appinstalled", () => { E.instalar = null; avisar("Agenda instalada! Abra pelo ícone."); render(); });
 
 // ---------------------------------------------------------------- início
+S.iniciar(G);
+M.iniciar({ render: () => render(), abrirFolha, fecharFolha, perguntar, avisar: (m) => avisar(m), corCat, CATS, chipsCategoria });
+S.ouvir(() => {
+  categoriasDoPC();
+  if (S.estado.precisaEntrar) { S.estado.precisaEntrar = false; E.precisaEntrar = true; }
+  if (!document.getElementById("folha").classList.contains("aberta") || E.aba !== "metas") render();
+});
+categoriasDoPC();
+
 async function iniciar() {
   aplicarTema();
   E._abertoEm = new Date();
@@ -658,6 +690,8 @@ async function iniciar() {
   if (!G.sessao().nome && !DEMO) G.lerConta().then(render).catch(() => {});
   carregarSemana(inicioSemana(E.dia));
   carregarTarefas();
+  S.sincronizar();
+  setInterval(() => { if (document.visibilityState === "visible") S.sincronizar(); }, 120_000);
 }
 
 if ("serviceWorker" in navigator && !DEMO && location.protocol === "https:") {
