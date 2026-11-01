@@ -200,3 +200,10 @@ h3.atraso { color: var(--perigo); }
 .toast.ver { opacity: 1; transform: translate(-50%, 0); }
 
 @media (min-width: 700px) { #app { padding-left: 0; padding-right: 0; } }
+
+/* ---------- instalar */
+.cartao.instalar { position: relative; border-color: color-mix(in srgb, var(--dest) 35%, var(--borda)); background: var(--dest-suave); text-align: left; width: 100%; }
+.entrar .cartao.instalar { margin-top: 18px; max-width: 360px; }
+.cartao.instalar .fechar { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; color: var(--suave); }
+.cartao.instalar .botao-principal { width: 100%; margin-top: 4px; }
+.ic { display: inline-block; border: 1.5px solid currentColor; border-radius: 4px; padding: 0 4px; font-size: 12px; }

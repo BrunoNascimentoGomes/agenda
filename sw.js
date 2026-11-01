@@ -1,6 +1,6 @@
 // Guarda os arquivos do app no aparelho: abre na hora e funciona sem internet (com os dados da última vez).
 // Ao publicar uma versão nova, mude VERSAO para os aparelhos baixarem os arquivos novos.
-const VERSAO = "agenda-1.0.0";
+const VERSAO = "agenda-1.0.1";
 const ARQUIVOS = [
   "./", "index.html", "app.css", "manifest.webmanifest",
   "js/app.js", "js/google.js", "js/config.js", "js/demo.js",

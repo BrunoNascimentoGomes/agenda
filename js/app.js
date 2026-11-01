@@ -210,7 +210,27 @@ function telaEntrar() {
       ${pronto ? '<button class="botao-principal" data-acao="entrar">Entrar com o Google</button>'
     : '<p class="aviso">Falta configurar o ID do cliente do Google neste app.</p>'}
       <a class="link" href="?demo">Ver uma demonstração</a>
+      ${cartaoInstalar(true)}
     </div>`;
+}
+
+const instalado = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const ehIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+/** Como instalar: botão (Android/Chrome) ou o passo a passo (iPhone ou quando o Chrome não oferece o botão). */
+function cartaoInstalar(sempre = false) {
+  if (instalado() || DEMO) return "";
+  if (!sempre && local.ler("agenda.instalar.fechado", false)) return "";
+  const ios = ehIOS();
+  const naoSafari = ios && /crios|fxios|edgios/i.test(navigator.userAgent);
+  const corpo = E.instalar
+    ? '<button class="botao-principal" data-acao="instalar">Instalar a Agenda</button>'
+    : ios ? (naoSafari ? "<p>No iPhone, abra este link no <b>Safari</b> para instalar.</p>"
+      : "<p>Toque em <b>Compartilhar</b> <span class=\"ic\">□↑</span> na barra do Safari e depois em <b>Adicionar à Tela de Início</b>.</p>")
+      : "<p>No Chrome, toque no menu <b>⋮</b> (canto de cima) e depois em <b>Instalar app</b> ou <b>Adicionar à tela inicial</b>.</p>";
+  return `<section class="cartao instalar">
+    ${sempre ? "" : '<button class="fechar" data-acao="fechar-instalar" aria-label="Fechar">✕</button>'}
+    <h3>📲 Instale no celular</h3>${corpo}</section>`;
 }
 
 function chipsDiaTodo(itens, tarefas) {
@@ -250,6 +270,7 @@ function telaAgenda() {
   }).join("");
   const vazio = !it.comHora.length && !it.diaTodo.length && !it.tarefas.length;
   return `
+    ${cartaoInstalar()}
     <section class="semana" data-gesto="semana">
       <button class="seta" data-acao="semana" data-passo="-1" aria-label="Semana anterior">‹</button>
       <div class="dias">${dias}</div>
@@ -295,8 +316,6 @@ function telaTarefas() {
 
 function telaAjustes() {
   const s = G.sessao(), tema = local.ler("agenda.tema", "auto"), cor = local.ler("agenda.cor", "#5B5BD6");
-  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const instalado = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
   return `
     <section class="cartao">
       <h3>Conta Google</h3>
@@ -318,12 +337,7 @@ function telaAjustes() {
       <div class="cores">${Object.entries(CORES_APP).map(([n, c]) =>
     `<button class="cor ${c === cor ? "sel" : ""}" style="background:${c}" data-acao="cor" data-valor="${c}" aria-label="${n}"></button>`).join("")}</div>
     </section>
-    ${instalado ? "" : `<section class="cartao">
-      <h3>Instalar no celular</h3>
-      ${E.instalar ? '<button class="botao-principal" data-acao="instalar">Instalar a Agenda</button>' : ios
-    ? "<p>No Safari, toque em <b>Compartilhar</b> (□↑) e depois em <b>Adicionar à Tela de Início</b>.</p>"
-    : "<p>No Chrome, toque no menu <b>⋮</b> e depois em <b>Instalar app</b> (ou <b>Adicionar à tela inicial</b>).</p>"}
-    </section>`}
+    ${cartaoInstalar(true)}
     <section class="cartao">
       <h3>Sobre</h3>
       <p>As tarefas e eventos ficam na sua conta Google, os mesmos do app do computador. Em breve: metas, sequências e o pet também aqui.</p>
@@ -575,6 +589,7 @@ document.addEventListener("click", async (e) => {
   else if (a === "tema") { local.gravar("agenda.tema", b.dataset.valor); aplicarTema(); render(); }
   else if (a === "cor") { local.gravar("agenda.cor", b.dataset.valor); aplicarTema(); render(); }
   else if (a === "instalar" && E.instalar) { E.instalar.prompt(); E.instalar = null; render(); }
+  else if (a === "fechar-instalar") { local.gravar("agenda.instalar.fechado", true); render(); }
   else if (a === "fechar-folha") fecharFolha();
   else if (a === "novo") {
     if (E.aba === "tarefas") editorTarefa(null, null);
@@ -611,7 +626,8 @@ document.addEventListener("visibilitychange", () => {
   if (G.conectou() && !G.tokenValido() && !DEMO) { E.precisaEntrar = true; render(); return; }
   atualizarTudo(false);
 });
-window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); E.instalar = e; if (E.aba === "ajustes") render(); });
+window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); E.instalar = e; render(); });
+window.addEventListener("appinstalled", () => { E.instalar = null; avisar("Agenda instalada! Abra pelo ícone."); render(); });
 
 // ---------------------------------------------------------------- início
 async function iniciar() {
