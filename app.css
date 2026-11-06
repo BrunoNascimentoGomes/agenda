@@ -380,3 +380,11 @@ h3.atraso { color: var(--perigo); }
 .presets { display: flex; gap: 8px; margin: 10px 0; }
 .presets button { flex: 1; border: 1px solid var(--borda); border-radius: 12px; padding: 10px 4px; font-weight: 700; background: var(--cartao2); }
 .presets button.sel { border-color: var(--dest); background: var(--dest-suave); color: var(--dest); }
+
+.sons-grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 10px 0; }
+.sons-grade button { display: flex; align-items: center; gap: 8px; text-align: left; border: 1px solid var(--borda); background: var(--cartao2);
+                     border-radius: 12px; padding: 10px; font-weight: 600; font-size: 13px; line-height: 1.25; min-height: 48px; }
+.sons-grade button span { font-size: 18px; flex: none; }
+.sons-grade button.sel { border-color: var(--dest); background: var(--dest-suave); color: var(--dest); }
+.volume { display: flex; align-items: center; gap: 10px; margin: 6px 0 10px; }
+.volume input { flex: 1; accent-color: var(--dest); height: 28px; }

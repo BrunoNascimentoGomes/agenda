@@ -589,7 +589,7 @@ function irPara(d) {
 document.addEventListener("click", async (e) => {
   const b = e.target.closest("[data-acao]"); if (!b) return;
   const a = b.dataset.acao;
-  if ((a.startsWith("foco-") || a === "meta-focar") && await F.acao(a, b, E)) { window.scrollTo(0, 0); return; }
+  if ((a.startsWith("foco-") || a === "meta-focar") && await F.acao(a, b, E)) { if (["meta-focar", "foco-abrir", "foco-voltar"].includes(a)) window.scrollTo(0, 0); return; }
   if (a.startsWith("meta") && M.acao(a, b, E)) return;
   if (a === "pet") { PET.folha(E); return; }
   if ((a.startsWith("nota-") || a.startsWith("lista-")) && N.acao(a, b)) return;

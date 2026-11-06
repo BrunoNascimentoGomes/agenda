@@ -3,6 +3,7 @@
 // que sincroniza com o PC.
 import * as S from "./sync.js";
 import * as M from "./metas.js";
+import * as SOM from "./sons.js";
 
 let C;
 export function iniciar(ctx) { C = ctx; }
@@ -143,8 +144,9 @@ function bip(duplo) {
 let faseAnterior = null;
 /** Chamado a cada segundo pela tela principal: atualiza o relógio e avisa a troca de fase. */
 export function tique() {
-  const s = sessao(); if (!s) return;
+  const s = sessao(); if (!s) { SOM.atualizar(null); return; }
   const r = calcular(s);
+  SOM.atualizar(r);
   if (s.modo === "pomodoro" && faseAnterior && r.rodando && faseAnterior !== r.fase) {
     bip(r.fase === "estudo");
     C.avisar(r.fase === "descanso" ? "Hora do descanso ☕" : "De volta ao foco 💪");
@@ -184,8 +186,23 @@ export function pilula(abaAtual) {
 
 export function abrir(uid) { metaAberta = uid || null; }
 
+function cartaoSons(pomodoro, s) {
+  const sp = SOM.preferencias();
+  return `<section class="cartao sons-foco"><h3>🎧 Sons para focar</h3>
+    <div class="sons-grade">
+      <button class="${sp.tema ? "" : "sel"}" data-acao="foco-som" data-v=""><span>🔇</span>Sem som</button>
+      ${SOM.TEMAS.map(([id, nome, ic]) => `<button class="${sp.tema === id ? "sel" : ""}" data-acao="foco-som" data-v="${id}"><span>${ic}</span>${esc(nome)}</button>`).join("")}
+    </div>
+    ${sp.tema ? `<label class="volume"><span>🔈</span><input type="range" min="0" max="100" step="1" value="${sp.volume}" data-som-volume aria-label="Volume"><span>🔊</span></label>
+    ${pomodoro ? `<label class="alternar"><span>Tocar também no descanso</span>
+      <input type="checkbox" data-acao="foco-som-descanso" ${sp.descanso ? "checked" : ""}><i></i></label>` : ""}
+    <p class="nota">${s ? "O som toca enquanto o foco está contando e para quando você pausa." : "Começa a tocar quando você iniciar o foco."}</p>` : ""}
+  </section>`;
+}
+
 export function tela() {
   const s = sessao(), p = preferencias();
+  SOM.atualizar(s ? calcular(s) : null);
   const uid = s ? s.metaUid : metaAberta, m = M.metas().find((x) => x.uid === uid);
   if (!m && !s) return `<div class="vazio">Escolha uma meta na aba Metas e toque em ▶ Focar.</div>`;
   const cor = m ? C.corCat(m.categoria) : "var(--dest)";
@@ -229,6 +246,7 @@ export function tela() {
       : `<button class="botao-principal grande" data-acao="foco-pausar">${r.rodando ? "Pausar" : "▶ Continuar foco"}</button>
          <button class="botao-leve grande" data-acao="foco-encerrar">Encerrar e registrar</button>`}
     </div>
+    ${cartaoSons(pomodoro, s)}
     ${s ? `<p class="nota centro">Pode usar o resto do app: a sessão continua${pomodoro ? ". O celular vibra na troca de fase (com o app aberto)" : ""}.</p>` : ""}
     ${!s && pomodoro ? `<section class="cartao"><h3>Seu ritmo</h3>
       <div class="presets">${PRESETS.map(([a, b]) => `<button class="${a === p.estudo && b === p.descanso ? "sel" : ""}" data-acao="foco-preset" data-a="${a}" data-b="${b}">${a} / ${b}</button>`).join("")}</div>
@@ -240,6 +258,8 @@ export function tela() {
 }
 
 export function montado(raiz) {
+  const vol = raiz.querySelector("[data-som-volume]");
+  if (vol) vol.addEventListener("input", () => SOM.definir({ volume: Number(vol.value) }));
   raiz.querySelectorAll("[data-foco-campo]").forEach((i) => i.addEventListener("change", () => {
     const p = preferencias(), v = Math.round(Number(i.value));
     if (!(v >= 1 && v <= 1440)) { C.avisar("Use minutos entre 1 e 1440."); i.value = p[i.dataset.focoCampo]; return; }
@@ -247,7 +267,13 @@ export function montado(raiz) {
   }));
 }
 
+// o iPhone só libera o áudio depois de um toque: se a sessão já vinha rodando, o primeiro toque destrava o som
+document.addEventListener("pointerdown", () => { if (sessao() && SOM.preferencias().tema) SOM.desbloquear(); }, { capture: true });
+
 export async function acao(a, b, E) {
+  if (a.startsWith("foco-")) SOM.desbloquear();
+  if (a === "foco-som") { SOM.definir({ tema: b.dataset.v }); C.render(); return true; }
+  if (a === "foco-som-descanso") { SOM.definir({ descanso: b.checked }); return true; }
   if (a === "foco-abrir") { E.aba = "foco"; C.render(); return true; }
   if (a === "foco-voltar") { E.aba = "metas"; C.render(); return true; }
   if (a === "foco-modo") { gravar(K_PREF, { ...preferencias(), modo: b.dataset.v }); C.render(); return true; }
