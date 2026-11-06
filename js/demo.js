@@ -105,6 +105,15 @@ export async function driveBaixar() {
       if (k < 9 || k % 4) itens[`feito:g:e4|${d}`] = 1;
     }
     itens[`reg:m1|${iso(hoje)}`] = 1;
+    const L = (u, nome, cor, fixada, n) => { itens[`lista:${u}`] = { nome, cor, fixada, criada: n }; };
+    const I = (u, l, texto, dias, n) => { itens[`nota:${u}`] = { lista: l, texto, feita: dias !== null,
+      feita_em: dias !== null ? iso(mais(hoje, -dias)) : null, criada: n }; };
+    L("l1", "🛒 Mercado", "#F2853A", true, 1); L("l2", "🎓 Faculdade", "#9A6AF0", false, 2);
+    L("l3", "💡 Ideias", "#3D8BF2", false, 3); L("l4", "📞 Ligar", "#16B08A", false, 4);
+    I("n1", "l1", "Arroz", null, 5); I("n2", "l1", "Café", null, 6); I("n3", "l1", "Leite", 0, 7); I("n4", "l1", "Ovos", 1, 8);
+    I("n5", "l1", "Sabão", 20, 9); I("n6", "l2", "Lista 3 de Circuitos", null, 10); I("n7", "l2", "Ler cap. 4 do livro", null, 11);
+    I("n8", "l2", "Relatório de lab", 2, 12); I("n9", "l3", "App de notas no celular", null, 13); I("n10", "l3", "Viagem em 2027", null, 14);
+    I("n11", "l4", "Dentista", null, 15); I("n12", "l4", "Banco", 0, 16);
     doc = { itens };
     localStorage.setItem("agenda.demo.drive", JSON.stringify(doc));
   }

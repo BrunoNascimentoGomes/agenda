@@ -1,9 +1,9 @@
 // Guarda os arquivos do app no aparelho: abre na hora e funciona sem internet (com os dados da última vez).
 // Ao publicar uma versão nova, mude VERSAO para os aparelhos baixarem os arquivos novos.
-const VERSAO = "agenda-1.2.0";
+const VERSAO = "agenda-1.3.0";
 const ARQUIVOS = [
   "./", "index.html", "app.css", "manifest.webmanifest",
-  "js/app.js", "js/google.js", "js/config.js", "js/demo.js", "js/sync.js", "js/metas.js", "js/pet.js", "pets/pets.json", "pets/ovo.webp",
+  "js/app.js", "js/google.js", "js/config.js", "js/demo.js", "js/sync.js", "js/metas.js", "js/pet.js", "js/notas.js", "pets/pets.json", "pets/ovo.webp",
   "icones/icone-32.png", "icones/icone-192.png", "icones/icone-512.png", "icones/apple-touch-icon.png",
   "icones/icone-mascara-192.png", "icones/icone-mascara-512.png",
 ];

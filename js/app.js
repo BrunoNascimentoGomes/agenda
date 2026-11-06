@@ -6,6 +6,7 @@ const G = DEMO ? await import("./demo.js") : await import("./google.js");
 import * as S from "./sync.js";
 import * as M from "./metas.js";
 import * as PET from "./pet.js";
+import * as N from "./notas.js";
 
 // ---------------------------------------------------------------- datas
 const MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro",
@@ -196,13 +197,14 @@ function render() {
   document.getElementById("fab").hidden = !entrou || E.aba === "ajustes";
   if (!entrou) { $conteudo().innerHTML = telaEntrar(); return; }
   $conteudo().innerHTML = E.aba === "tarefas" ? telaTarefas() : E.aba === "ajustes" ? telaAjustes()
-    : E.aba === "metas" ? PET.cartao(E) + M.tela(E) : telaAgenda();
+    : E.aba === "metas" ? PET.cartao(E) + M.tela(E) : E.aba === "notas" ? N.tela() : telaAgenda();
+  if (E.aba === "notas") N.montado($conteudo());
 }
 
 function topo() {
   const d = E.dia;
   const titulo = E.aba === "agenda" ? `${MESES[d.getMonth()][0].toUpperCase() + MESES[d.getMonth()].slice(1)} ${d.getFullYear()}`
-    : E.aba === "tarefas" ? "Tarefas" : E.aba === "metas" ? "Metas" : "Ajustes";
+    : E.aba === "tarefas" ? "Tarefas" : E.aba === "metas" ? "Metas" : E.aba === "notas" ? "Notas" : "Ajustes";
   return `
     <h1>${titulo}</h1>
     ${DEMO ? '<span class="selo">demonstração</span>' : ""}
@@ -586,6 +588,7 @@ document.addEventListener("click", async (e) => {
   const a = b.dataset.acao;
   if (a.startsWith("meta") && M.acao(a, b, E)) return;
   if (a === "pet") { PET.folha(E); return; }
+  if ((a.startsWith("nota-") || a.startsWith("lista-")) && N.acao(a, b)) return;
   if (a === "entrar") G.entrar();
   else if (a === "reconectar") G.entrar({ silencioso: false, volta: E.aba });
   else if (a === "trocar-conta") G.entrar({ trocarConta: true });
@@ -615,7 +618,8 @@ document.addEventListener("click", async (e) => {
   else if (a === "fechar-instalar") { local.gravar("agenda.instalar.fechado", true); render(); }
   else if (a === "fechar-folha") fecharFolha();
   else if (a === "novo") {
-    if (E.aba === "metas") M.editor(null);
+    if (E.aba === "notas") N.editorLista(null);
+    else if (E.aba === "metas") M.editor(null);
     else if (E.aba === "tarefas") editorTarefa(null, null);
     else {
       const r = await perguntar("Criar", rotuloDia(E.dia), [["evento", "Evento com horário"], ["tarefa", "Tarefa do dia"]]);
@@ -657,9 +661,12 @@ window.addEventListener("appinstalled", () => { E.instalar = null; avisar("Agend
 // ---------------------------------------------------------------- início
 S.iniciar(G);
 M.iniciar({ render: () => render(), abrirFolha, fecharFolha, perguntar, avisar: (m) => avisar(m), corCat, CATS, chipsCategoria });
+N.iniciar({ render: () => render(), abrirFolha, fecharFolha, perguntar, avisar: (m) => avisar(m) });
 S.ouvir(() => {
   categoriasDoPC();
   if (S.estado.precisaEntrar) { S.estado.precisaEntrar = false; E.precisaEntrar = true; }
+  const digitando = document.activeElement?.matches?.("#conteudo input, #conteudo textarea");
+  if (digitando) return;                         // não apaga o que está sendo escrito; desenha na próxima vez
   if (!document.getElementById("folha").classList.contains("aberta") || E.aba !== "metas") render();
 });
 categoriasDoPC();

@@ -323,3 +323,29 @@ h3.atraso { color: var(--perigo); }
 .premios { margin-bottom: 10px; }
 .premio b { line-height: 1.25; }
 .linha-humor + .nota, .nota + .nota { margin-top: 0; }
+
+/* ---------- notas */
+.abas button { font-size: 11px; }
+.nsub { color: var(--suave); font-size: 13px; margin: -4px 2px 10px; }
+.nbusca { width: 100%; border: 1px solid var(--borda); background: var(--cartao); border-radius: 12px; padding: 10px 12px;
+  font-size: 15px; margin-bottom: 12px; }
+.ngrade { columns: 2; column-gap: 10px; }
+@media (min-width: 560px) { .ngrade { columns: 3; } }
+.nlista { break-inside: avoid; display: block; width: 100%; margin: 0 0 10px; border-radius: 16px; padding: 10px 10px 4px 12px;
+  background: color-mix(in srgb, var(--c) 11%, var(--cartao)); border: 1px solid color-mix(in srgb, var(--c) 38%, var(--borda)); }
+.nlista.nova { border: 2px dashed var(--borda); background: transparent; color: var(--suave); font-weight: 700; padding: 22px 8px; text-align: center; }
+.ntopo { display: flex; align-items: flex-start; gap: 4px; margin-bottom: 4px; }
+.ntopo b { flex: 1; font-size: 15px; overflow-wrap: anywhere; padding-top: 3px; }
+.npino { font-size: 12px; padding-top: 4px; }
+.nmenu { width: 30px; height: 28px; border-radius: 8px; color: var(--suave); font-weight: 800; font-size: 18px; flex: none; }
+.nitem { display: flex; align-items: flex-start; gap: 8px; }
+.ncx { width: 20px; height: 20px; flex: none; margin-top: 6px; border-radius: 6px; border: 2px solid color-mix(in srgb, var(--c) 75%, var(--fraco));
+  color: #fff; font-size: 12px; font-weight: 800; display: grid; place-items: center; }
+.nitem.feito .ncx { background: var(--c); border-color: var(--c); }
+.ntexto { flex: 1; text-align: left; padding: 5px 0; font-size: 14.5px; overflow-wrap: anywhere; min-width: 0; }
+.nitem.feito .ntexto { text-decoration: line-through; color: var(--suave); }
+.nriscados, .nantigos { font-size: 12px; color: var(--suave); padding: 6px 0 2px; display: block; }
+.nantigos { color: var(--dest); font-weight: 600; }
+.nnovo input { width: 100%; border: 0; border-top: 1px dashed color-mix(in srgb, var(--c) 35%, var(--borda)); background: transparent;
+  padding: 9px 2px; font-size: 14.5px; margin-top: 4px; outline: none; }
+.nnovo input::placeholder { color: var(--suave); }
