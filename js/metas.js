@@ -141,7 +141,8 @@ function cartao(m, seg) {
     </div>
     <div class="meta-rodape">
       <small>${faltam}</small>
-      <button class="botao-meta" data-acao="meta-mais" data-uid="${esc(m.uid)}">${m.unidade === "horas" ? "＋ tempo hoje" : "＋1 hoje"}</button>
+      <div class="meta-botoes"><button class="botao-meta focar" data-acao="meta-focar" data-uid="${esc(m.uid)}" aria-label="Focar">▶ Focar</button>
+      <button class="botao-meta" data-acao="meta-mais" data-uid="${esc(m.uid)}">${m.unidade === "horas" ? "＋ tempo" : "＋1"}</button></div>
     </div>
   </article>`;
 }

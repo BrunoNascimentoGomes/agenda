@@ -7,6 +7,7 @@ import * as S from "./sync.js";
 import * as M from "./metas.js";
 import * as PET from "./pet.js";
 import * as N from "./notas.js";
+import * as F from "./foco.js";
 
 // ---------------------------------------------------------------- datas
 const MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro",
@@ -193,24 +194,26 @@ function render() {
   document.getElementById("faixa").innerHTML = E.precisaEntrar && entrou && !DEMO ? `
     <div class="faixa">A conexão com o Google expirou.
       <button data-acao="reconectar">Reconectar</button></div>` : "";
-  document.querySelectorAll(".abas button").forEach((b) => b.classList.toggle("ativa", b.dataset.aba === E.aba));
-  document.getElementById("fab").hidden = !entrou || E.aba === "ajustes";
+  const abaNav = E.aba === "foco" ? "metas" : E.aba;
+  document.querySelectorAll(".abas button").forEach((b) => b.classList.toggle("ativa", b.dataset.aba === abaNav));
+  document.getElementById("fab").hidden = !entrou || E.aba === "ajustes" || E.aba === "foco";
   if (!entrou) { $conteudo().innerHTML = telaEntrar(); return; }
-  $conteudo().innerHTML = E.aba === "tarefas" ? telaTarefas() : E.aba === "ajustes" ? telaAjustes()
-    : E.aba === "metas" ? PET.cartao(E) + M.tela(E) : E.aba === "notas" ? N.tela() : telaAgenda();
+  $conteudo().innerHTML = F.pilula(E.aba) + (E.aba === "tarefas" ? telaTarefas() : E.aba === "ajustes" ? telaAjustes()
+    : E.aba === "metas" ? PET.cartao(E) + M.tela(E) : E.aba === "notas" ? N.tela() : E.aba === "foco" ? F.tela() : telaAgenda());
   if (E.aba === "notas") N.montado($conteudo());
+  if (E.aba === "foco") F.montado($conteudo());
 }
 
 function topo() {
   const d = E.dia;
   const titulo = E.aba === "agenda" ? `${MESES[d.getMonth()][0].toUpperCase() + MESES[d.getMonth()].slice(1)} ${d.getFullYear()}`
-    : E.aba === "tarefas" ? "Tarefas" : E.aba === "metas" ? "Metas" : E.aba === "notas" ? "Notas" : "Ajustes";
+    : E.aba === "tarefas" ? "Tarefas" : E.aba === "metas" ? "Metas" : E.aba === "notas" ? "Notas" : E.aba === "foco" ? "Foco" : "Ajustes";
   return `
     <h1>${titulo}</h1>
     ${DEMO ? '<span class="selo">demonstração</span>' : ""}
     <div class="acoes-topo">
       ${E.aba === "agenda" && iso(E.dia) !== iso(hoje()) ? '<button class="botao-leve" data-acao="hoje">Hoje</button>' : ""}
-      ${E.aba !== "ajustes" ? `<button class="icone ${E.carregando || (E.aba === "metas" && S.estado.ocupado) ? "girando" : ""}" data-acao="atualizar" aria-label="Atualizar">⟳</button>` : ""}
+      ${E.aba !== "ajustes" && E.aba !== "foco" ? `<button class="icone ${E.carregando || (E.aba === "metas" && S.estado.ocupado) ? "girando" : ""}" data-acao="atualizar" aria-label="Atualizar">⟳</button>` : ""}
     </div>`;
 }
 
@@ -586,6 +589,7 @@ function irPara(d) {
 document.addEventListener("click", async (e) => {
   const b = e.target.closest("[data-acao]"); if (!b) return;
   const a = b.dataset.acao;
+  if ((a.startsWith("foco-") || a === "meta-focar") && await F.acao(a, b, E)) { window.scrollTo(0, 0); return; }
   if (a.startsWith("meta") && M.acao(a, b, E)) return;
   if (a === "pet") { PET.folha(E); return; }
   if ((a.startsWith("nota-") || a.startsWith("lista-")) && N.acao(a, b)) return;
@@ -662,6 +666,8 @@ window.addEventListener("appinstalled", () => { E.instalar = null; avisar("Agend
 S.iniciar(G);
 M.iniciar({ render: () => render(), abrirFolha, fecharFolha, perguntar, avisar: (m) => avisar(m), corCat, CATS, chipsCategoria });
 N.iniciar({ render: () => render(), abrirFolha, fecharFolha, perguntar, avisar: (m) => avisar(m) });
+F.iniciar({ render: () => render(), abrirFolha, fecharFolha, perguntar, avisar: (m) => avisar(m), corCat });
+setInterval(() => F.tique(), 1000);
 S.ouvir(() => {
   categoriasDoPC();
   if (S.estado.precisaEntrar) { S.estado.precisaEntrar = false; E.precisaEntrar = true; }
